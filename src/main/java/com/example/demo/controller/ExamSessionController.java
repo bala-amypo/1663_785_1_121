@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/sessions")
-@Tag(name = "Exam Sessions")
+// @Tag(name = "Exam Sessions")
 public class ExamSessionController {
 
     private final ExamSessionService service;

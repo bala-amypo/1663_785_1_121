@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rooms")
-@Tag(name = "Rooms")
+
 public class ExamRoomController {
 
     private final ExamRoomService service;
