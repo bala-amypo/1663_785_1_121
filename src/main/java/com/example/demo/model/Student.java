@@ -2,6 +2,9 @@ package com.example.demo.model;
 
 import com.example.demo.exception.ApiException;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "rollNumber"))
