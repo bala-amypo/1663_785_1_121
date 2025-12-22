@@ -17,7 +17,7 @@ public class Student {
     @GeneratedValue
     private Long id;
 
-    private String rollNumber;
+    private Integer rollNumber;
     private String name;
     private String department;
     private Integer year;
