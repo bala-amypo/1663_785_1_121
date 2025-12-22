@@ -4,9 +4,12 @@ import com.example.demo.exception.ApiException;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor
+import lombok.AllArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "rollNumber"))
 public class Student {
 

@@ -6,9 +6,13 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor
+import lombok.AllArgsConstructor;
+
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExamSession {
 
     @Id
