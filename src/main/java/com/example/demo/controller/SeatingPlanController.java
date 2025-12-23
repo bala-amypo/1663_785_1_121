@@ -2,13 +2,15 @@ package com.example.demo.controller;
 
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.service.SeatingPlanService;
-import io.swagger.v3.oas.annotations.*;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/plans")
-// @Tag(name = "Seating Plans")
+@Tag(name = "Seating Plan Controller")
 public class SeatingPlanController {
 
     private final SeatingPlanService service;
@@ -19,19 +21,19 @@ public class SeatingPlanController {
 
     @PostMapping("/generate/{sessionId}")
     @Operation(summary = "Generate seating plan")
-    public SeatingPlan generate(@PathVariable Long sessionId) {
+    public SeatingPlan generatePlan(@PathVariable Long sessionId) {
         return service.generatePlan(sessionId);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get seating plan")
-    public SeatingPlan get(@PathVariable Long id) {
-        return service.getPlan(id);
+    @GetMapping("/{planId}")
+    @Operation(summary = "Get seating plan by ID")
+    public SeatingPlan getPlan(@PathVariable Long planId) {
+        return service.getPlan(planId);
     }
 
     @GetMapping("/session/{sessionId}")
-    @Operation(summary = "Get plans by session")
-    public List<SeatingPlan> list(@PathVariable Long sessionId) {
+    @Operation(summary = "Get seating plans by session")
+    public List<SeatingPlan> getPlansBySession(@PathVariable Long sessionId) {
         return service.getPlansBySession(sessionId);
     }
 }
