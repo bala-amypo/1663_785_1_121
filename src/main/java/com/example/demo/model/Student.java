@@ -7,27 +7,14 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "rollNumber"))
 public class Student {
+@Id @GeneratedValue
+private Long id;
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    private String rollNumber;
-    private String name;
-    private String department;
-    private Integer year;
-
-    @PrePersist
-    @PreUpdate
-    void validateYear() {
-        if (year < 1 || year > 5)
-            throw new ApiException("year");
-    }
-
-    // getters and setters
+@Column(unique = true)
+private String rollNumber;
+private String name;
+private String department;
+private Integer year;
 }

@@ -10,29 +10,14 @@ import lombok.AllArgsConstructor;
 
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class ExamSession {
+@Id @GeneratedValue
+private Long id;
+private String courseCode;
+private LocalDate examDate;
+private String examTime;
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    private String courseCode;
-    private LocalDate examDate;
-    private String examTime;
-
-    @ManyToMany
-    private List<Student> students;
-
-    @PrePersist
-    void validate() {
-        if (examDate.isBefore(LocalDate.now()))
-            throw new ApiException("past");
-        if (students == null || students.isEmpty())
-            throw new ApiException("at least 1 student");
-    }
-
-    // getters and setters
+@ManyToMany
+private List<Student> students;
 }
