@@ -8,30 +8,28 @@ import lombok.AllArgsConstructor;
 
 
 @Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class SeatingPlan {
+@Id @GeneratedValue
+private Long id;
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    @ManyToOne
-    private ExamSession examSession;
+@ManyToOne
+private ExamSession examSession;
 
-    @ManyToOne
-    private ExamRoom room;
 
-    @Lob
-    private String arrangementJson;
+@ManyToOne
+private ExamRoom room;
 
-    private LocalDateTime generatedAt;
 
-    @PrePersist
-    void setTimestamp() {
-        generatedAt = LocalDateTime.now();
-    }
+@Lob
+private String arrangementJson;
 
-    // getters and setters
+
+private LocalDateTime generatedAt;
+
+
+@PrePersist
+public void onCreate() {
+generatedAt = LocalDateTime.now();
+}
 }
