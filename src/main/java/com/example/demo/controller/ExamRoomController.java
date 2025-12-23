@@ -19,15 +19,17 @@ public class ExamRoomController {
         this.service = service;
     }
 
-    @PostMapping
-    @Operation(summary = "Add exam room")
-    public ExamRoom addRoom(@RequestBody ExamRoom room) {
-        return service.addRoom(room);
-    }
-
-    @GetMapping
-    @Operation(summary = "Get all rooms")
-    public List<ExamRoom> getAllRooms() {
-        return service.getAllRooms();
-    }
+ @PostMapping
+public ExamRoom create(@RequestBody ExamRoom room) {
+    return service.save(room);
 }
+
+@GetMapping("/{id}")
+public ExamRoom get(@PathVariable Long id) {
+    return service.getById(id);
+}
+}
+
+
+
+
