@@ -8,21 +8,20 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ExamSessionService {
-private final ExamSessionRepository repo;
-private final StudentRepository studentRepo;
 
+    @Autowired
+    private ExamSessionRepository repository;
 
-public ExamSessionService(ExamSessionRepository repo, StudentRepository studentRepo) {
-this.repo = repo;
-this.studentRepo = studentRepo;
-}
+    public ExamSession save(ExamSession s) {
+        return repository.save(s);
+    }
 
+    public ExamSession getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+    }
 
-public ExamSession createSession(ExamSession s) {
-if (s.getExamDate().isBefore(LocalDate.now()))
-throw new ApiException("past date");
-if (s.getStudents().isEmpty())
-throw new ApiException("at least 1 student");
-return repo.save(s);
-}
+    public List<ExamSession> getAll() {
+        return repository.findAll();
+    }
 }

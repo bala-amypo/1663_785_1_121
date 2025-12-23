@@ -8,23 +8,20 @@ import java.util.List;
 
 @Service
 public class StudentService {
-private final StudentRepository repo;
 
+    @Autowired
+    private StudentRepository repository;
 
-public StudentService(StudentRepository repo) {
-this.repo = repo;
-}
+    public Student save(Student s) {
+        return repository.save(s);
+    }
 
+    public List<Student> getAll() {
+        return repository.findAll();
+    }
 
-public Student addStudent(Student s) {
-if (s.getYear() < 1 || s.getYear() > 5)
-throw new ApiException("invalid year");
-
-
-if (repo.findByRollNumber(s.getRollNumber()) != null)
-throw new ApiException("roll number exists");
-
-
-return repo.save(s);
-}
+    public Student getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+    }
 }

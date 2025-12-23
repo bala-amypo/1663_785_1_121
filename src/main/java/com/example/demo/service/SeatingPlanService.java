@@ -8,32 +8,20 @@ import java.util.List;
 
 @Service
 public class SeatingPlanService {
-private final ExamSessionRepository sessionRepo;
-private final SeatingPlanRepository planRepo;
-private final ExamRoomRepository roomRepo;
 
+    @Autowired
+    private SeatingPlanRepository repository;
 
-public SeatingPlanService(ExamSessionRepository s, SeatingPlanRepository p, ExamRoomRepository r) {
-this.sessionRepo = s;
-this.planRepo = p;
-this.roomRepo = r;
-}
+    public SeatingPlan save(SeatingPlan plan) {
+        return repository.save(plan);
+    }
 
+    public SeatingPlan getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plan not found"));
+    }
 
-public SeatingPlan generatePlan(Long sessionId) {
-ExamSession session = sessionRepo.findById(sessionId)
-.orElseThrow(() -> new ApiException("session not found"));
-
-
-int required = session.getStudents().size();
-List<ExamRoom> rooms = roomRepo.findByCapacityGreaterThanEqual(required);
-if (rooms.isEmpty()) throw new ApiException("no room");
-
-
-SeatingPlan plan = new SeatingPlan();
-plan.setExamSession(session);
-plan.setRoom(rooms.get(0));
-plan.setArrangementJson("{ 'status':'generated' }");
-return planRepo.save(plan);
-}
+    public List<SeatingPlan> getAll() {
+        return repository.findAll();
+    }
 }
