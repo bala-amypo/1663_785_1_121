@@ -9,27 +9,34 @@ import lombok.AllArgsConstructor;
 
 @Entity
 public class SeatingPlan {
-@Id @GeneratedValue
-private Long id;
 
+    @Id
+    @GeneratedValue
+    private Long id;
 
-@ManyToOne
-private ExamSession examSession;
+    @ManyToOne
+    private ExamSession examSession;
 
+    @ManyToOne
+    private ExamRoom room;
 
-@ManyToOne
-private ExamRoom room;
+    @Column(columnDefinition = "TEXT")
+    private String arrangementJson;
 
+    public Long getId() { return id; }
+    public ExamSession getExamSession() { return examSession; }
+    public ExamRoom getRoom() { return room; }
+    public String getArrangementJson() { return arrangementJson; }
 
-@Lob
-private String arrangementJson;
+    public void setExamSession(ExamSession examSession) {
+        this.examSession = examSession;
+    }
 
+    public void setRoom(ExamRoom room) {
+        this.room = room;
+    }
 
-private LocalDateTime generatedAt;
-
-
-@PrePersist
-public void onCreate() {
-generatedAt = LocalDateTime.now();
-}
+    public void setArrangementJson(String arrangementJson) {
+        this.arrangementJson = arrangementJson;
+    }
 }
