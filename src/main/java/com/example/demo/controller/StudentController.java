@@ -2,30 +2,31 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Student;
 import com.example.demo.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid; // Import this
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/students")
+@RequestMapping("/students")
+@RequiredArgsConstructor
+@Tag(name = "Students", description = "Student Management")
 public class StudentController {
-
-    @Autowired
-    private StudentService service;
+    private final StudentService service;
 
     @PostMapping
-    public Student create(@RequestBody Student student) {
-        return service.save(student);   
+    @Operation(summary = "Add a new student")
+    // FIX: Add @Valid here
+    public ResponseEntity<Student> add(@RequestBody @Valid Student s) {
+        return ResponseEntity.ok(service.addStudent(s));
     }
 
     @GetMapping
-    public List<Student> getAll() {
-        return service.getAll();       
-    }
-
-    @GetMapping("/{id}")
-    public Student getById(@PathVariable Long id) {
-        return service.getById(id);
+    @Operation(summary = "List all students")
+    public ResponseEntity<List<Student>> list() {
+        return ResponseEntity.ok(service.getAllStudents());
     }
 }

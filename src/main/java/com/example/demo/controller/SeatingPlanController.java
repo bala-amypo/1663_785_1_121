@@ -2,30 +2,35 @@ package com.example.demo.controller;
 
 import com.example.demo.model.SeatingPlan;
 import com.example.demo.service.SeatingPlanService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/seating-plans")
+@RequestMapping("/plans")
+@RequiredArgsConstructor
+@Tag(name = "Plans", description = "Seating Plan Management")
 public class SeatingPlanController {
+    private final SeatingPlanService service;
 
-    @Autowired
-    private SeatingPlanService service;
-
-    @PostMapping
-    public SeatingPlan create(@RequestBody SeatingPlan plan) {
-        return service.save(plan);   // ✅ was generatePlan
+    @PostMapping("/generate/{sessionId}")
+    @Operation(summary = "Generate a seating plan for a session")
+    public ResponseEntity<SeatingPlan> generate(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(service.generatePlan(sessionId));
     }
 
     @GetMapping("/{id}")
-    public SeatingPlan getById(@PathVariable Long id) {
-        return service.getById(id);  // ✅ was getPlan
+    @Operation(summary = "Get a seating plan by ID")
+    public ResponseEntity<SeatingPlan> get(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getPlan(id));
     }
 
-    @GetMapping
-    public List<SeatingPlan> getAll() {
-        return service.getAll();     // ✅ was getPlansBySession
+    @GetMapping("/session/{sessionId}")
+    @Operation(summary = "List all plans for a specific session")
+    public ResponseEntity<List<SeatingPlan>> list(@PathVariable Long sessionId) {
+        return ResponseEntity.ok(service.getPlansBySession(sessionId));
     }
 }

@@ -2,30 +2,28 @@ package com.example.demo.controller;
 
 import com.example.demo.model.ExamSession;
 import com.example.demo.service.ExamSessionService;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/sessions")
+@RequestMapping("/sessions")
+@RequiredArgsConstructor
+@Tag(name = "Sessions", description = "Exam Session Management")
 public class ExamSessionController {
-
-    @Autowired
-    private ExamSessionService service;
+    private final ExamSessionService service;
 
     @PostMapping
-    public ExamSession create(@RequestBody ExamSession session) {
-        return service.save(session);   // ✅ was createSession
+    @Operation(summary = "Create a new exam session")
+    public ResponseEntity<ExamSession> create(@RequestBody ExamSession s) {
+        return ResponseEntity.ok(service.createSession(s));
     }
 
     @GetMapping("/{id}")
-    public ExamSession getById(@PathVariable Long id) {
-        return service.getById(id);     // ✅ was getSession
-    }
-
-    @GetMapping
-    public List<ExamSession> getAll() {
-        return service.getAll();
+    @Operation(summary = "Get exam session details by ID")
+    public ResponseEntity<ExamSession> get(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getSession(id));
     }
 }
