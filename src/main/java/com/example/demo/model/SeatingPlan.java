@@ -5,14 +5,9 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class SeatingPlan {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -25,9 +20,4 @@ public class SeatingPlan {
     private String arrangementJson;
 
     private LocalDateTime generatedAt;
-
-    @PrePersist
-    public void onCreate() {
-        generatedAt = LocalDateTime.now();
-    }
 }

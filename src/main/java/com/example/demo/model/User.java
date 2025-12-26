@@ -4,22 +4,15 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "users") // 'user' is a reserved keyword in some DBs
+@Data @NoArgsConstructor @AllArgsConstructor @Builder
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String name;
-
+    
     @Column(unique = true)
     private String email;
-
+    private String name;
     private String password;
-
     private String role;
 }
