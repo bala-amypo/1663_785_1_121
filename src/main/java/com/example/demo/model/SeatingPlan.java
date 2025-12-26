@@ -2,12 +2,13 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class SeatingPlan {
 
     @Id
@@ -26,7 +27,7 @@ public class SeatingPlan {
     private LocalDateTime generatedAt;
 
     @PrePersist
-    public void prePersist() {
+    public void onCreate() {
         generatedAt = LocalDateTime.now();
     }
 }
