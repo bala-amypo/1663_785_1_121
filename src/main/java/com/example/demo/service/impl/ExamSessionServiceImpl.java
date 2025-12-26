@@ -1,11 +1,21 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.exception.ApiException;
+import com.example.demo.model.ExamSession;
+import com.example.demo.repository.ExamSessionRepository;
+import com.example.demo.repository.StudentRepository;
+import com.example.demo.service.ExamSessionService;
+
+import java.time.LocalDate;
+
 public class ExamSessionServiceImpl implements ExamSessionService {
 
     private final ExamSessionRepository repo;
     private final StudentRepository studentRepo;
 
-    public ExamSessionServiceImpl(ExamSessionRepository r, StudentRepository s) {
-        this.repo = r;
-        this.studentRepo = s;
+    public ExamSessionServiceImpl(ExamSessionRepository repo, StudentRepository studentRepo) {
+        this.repo = repo;
+        this.studentRepo = studentRepo;
     }
 
     public ExamSession createSession(ExamSession s) {
