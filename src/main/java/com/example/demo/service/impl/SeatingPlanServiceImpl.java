@@ -5,79 +5,54 @@ import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.SeatingPlanService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
 import java.util.*;
 
+@Service
+@RequiredArgsConstructor
 public class SeatingPlanServiceImpl implements SeatingPlanService {
-
     private final ExamSessionRepository sessionRepo;
     private final SeatingPlanRepository planRepo;
     private final ExamRoomRepository roomRepo;
 
-    // ⚠️ Constructor order MUST match tests
-    public SeatingPlanServiceImpl(
-            ExamSessionRepository sessionRepo,
-            SeatingPlanRepository planRepo,
-            ExamRoomRepository roomRepo
-    ) {
-        this.sessionRepo = sessionRepo;
-        this.planRepo = planRepo;
-        this.roomRepo = roomRepo;
-    }
-
     @Override
     public SeatingPlan generatePlan(Long sessionId) {
-
         ExamSession session = sessionRepo.findById(sessionId)
-                .orElseThrow(() -> new ApiException("session not found"));
+                .orElseThrow(() -> new ApiException("Session not found"));
 
-        int studentCount = session.getStudents().size();
-
+        int requiredCapacity = session.getStudents().size();
+        
         List<ExamRoom> rooms = roomRepo.findAll();
-        if (rooms == null || rooms.isEmpty()) {
-            throw new ApiException("no room");
+        ExamRoom selectedRoom = rooms.stream()
+                .filter(r -> r.getCapacity() >= requiredCapacity)
+                .findFirst()
+                .orElseThrow(() -> new ApiException("No room found with sufficient capacity"));
+
+        // Generate JSON Arrangement (Simple Mock Logic)
+        Map<String, String> arrangement = new HashMap<>();
+        List<Student> students = new ArrayList<>(session.getStudents());
+        for (int i = 0; i < students.size(); i++) {
+            arrangement.put("Seat-" + (i + 1), students.get(i).getRollNumber());
         }
 
-        // ✅ pick FIRST room that fits capacity
-        ExamRoom selectedRoom = null;
-        for (ExamRoom room : rooms) {
-            if (room.getCapacity() != null && room.getCapacity() >= studentCount) {
-                selectedRoom = room;
-                break;
-            }
-        }
+        String json = "{}";
+        try { json = new ObjectMapper().writeValueAsString(arrangement); } catch (Exception e) {}
 
-        if (selectedRoom == null) {
-            throw new ApiException("no room");
-        }
+        SeatingPlan plan = SeatingPlan.builder()
+                .examSession(session)
+                .room(selectedRoom)
+                .arrangementJson(json)
+                .generatedAt(LocalDateTime.now())
+                .build();
 
-        // ✅ generate seating JSON
-        Map<String, Object> arrangement = new LinkedHashMap<>();
-        int seat = 1;
-        for (Student s : session.getStudents()) {
-            arrangement.put("Seat-" + seat++, s.getRollNumber());
-        }
-
-        try {
-            String json = new ObjectMapper().writeValueAsString(arrangement);
-
-            SeatingPlan plan = SeatingPlan.builder()
-                    .examSession(session)
-                    .room(selectedRoom)
-                    .arrangementJson(json)
-                    .build();
-
-            return planRepo.save(plan);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return planRepo.save(plan);
     }
 
     @Override
     public SeatingPlan getPlan(Long id) {
-        return planRepo.findById(id)
-                .orElseThrow(() -> new ApiException("plan not found"));
+        return planRepo.findById(id).orElseThrow(() -> new ApiException("Plan not found"));
     }
 
     @Override
