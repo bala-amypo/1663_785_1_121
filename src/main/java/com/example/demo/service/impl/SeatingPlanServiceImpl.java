@@ -14,43 +14,73 @@ public class SeatingPlanServiceImpl implements SeatingPlanService {
     private final SeatingPlanRepository planRepo;
     private final ExamRoomRepository roomRepo;
 
-    public SeatingPlanServiceImpl(ExamSessionRepository s, SeatingPlanRepository p, ExamRoomRepository r) {
-        this.sessionRepo = s;
-        this.planRepo = p;
-        this.roomRepo = r;
+    // ⚠️ Constructor order MUST match tests
+    public SeatingPlanServiceImpl(
+            ExamSessionRepository sessionRepo,
+            SeatingPlanRepository planRepo,
+            ExamRoomRepository roomRepo
+    ) {
+        this.sessionRepo = sessionRepo;
+        this.planRepo = planRepo;
+        this.roomRepo = roomRepo;
     }
 
+    @Override
     public SeatingPlan generatePlan(Long sessionId) {
+
         ExamSession session = sessionRepo.findById(sessionId)
                 .orElseThrow(() -> new ApiException("session not found"));
 
+        int studentCount = session.getStudents().size();
+
         List<ExamRoom> rooms = roomRepo.findAll();
-        if (rooms.isEmpty())
+        if (rooms == null || rooms.isEmpty()) {
             throw new ApiException("no room");
+        }
 
-        ExamRoom room = rooms.get(0);
+        // ✅ pick FIRST room that fits capacity
+        ExamRoom selectedRoom = null;
+        for (ExamRoom room : rooms) {
+            if (room.getCapacity() != null && room.getCapacity() >= studentCount) {
+                selectedRoom = room;
+                break;
+            }
+        }
 
-        Map<String, String> map = new HashMap<>();
-        session.getStudents().forEach(s -> map.put(s.getRollNumber(), room.getRoomNumber()));
+        if (selectedRoom == null) {
+            throw new ApiException("no room");
+        }
+
+        // ✅ generate seating JSON
+        Map<String, Object> arrangement = new LinkedHashMap<>();
+        int seat = 1;
+        for (Student s : session.getStudents()) {
+            arrangement.put("Seat-" + seat++, s.getRollNumber());
+        }
 
         try {
-            String json = new ObjectMapper().writeValueAsString(map);
+            String json = new ObjectMapper().writeValueAsString(arrangement);
+
             SeatingPlan plan = SeatingPlan.builder()
                     .examSession(session)
-                    .room(room)
+                    .room(selectedRoom)
                     .arrangementJson(json)
                     .build();
+
             return planRepo.save(plan);
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+    @Override
     public SeatingPlan getPlan(Long id) {
         return planRepo.findById(id)
                 .orElseThrow(() -> new ApiException("plan not found"));
     }
 
+    @Override
     public List<SeatingPlan> getPlansBySession(Long sessionId) {
         return planRepo.findByExamSessionId(sessionId);
     }
