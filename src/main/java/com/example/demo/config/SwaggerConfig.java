@@ -20,7 +20,7 @@ public class SwaggerConfig {
 
             // Optional: your hosted server
             .servers(List.of(
-                new Server().url("https://9188.pro604cr.amypo.ai/")
+                new Server().url("https://9169.408procr.amypo.ai/")
             ))
 
             // 🔐 Enable JWT Bearer Authentication
