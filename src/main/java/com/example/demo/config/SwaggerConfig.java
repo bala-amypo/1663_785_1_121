@@ -18,12 +18,12 @@ public class SwaggerConfig {
 
         return new OpenAPI()
 
-            // Optional: your hosted server
+            
             .servers(List.of(
-                new Server().url("https://9188.408procr.amypo.ai/")
+                new Server().url("https://9188.pro604cr.amypo.ai/")
             ))
 
-            // 🔐 Enable JWT Bearer Authentication
+            
             .addSecurityItem(
                 new SecurityRequirement().addList("BearerAuth")
             )
