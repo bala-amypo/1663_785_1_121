@@ -19,7 +19,7 @@ public class StudentController {
 
     @PostMapping
     @Operation(summary = "Add a new student")
-    // FIX: Add @Valid here
+    
     public ResponseEntity<Student> add(@RequestBody @Valid Student s) {
         return ResponseEntity.ok(service.addStudent(s));
     }
